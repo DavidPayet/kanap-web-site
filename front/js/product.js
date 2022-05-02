@@ -5,27 +5,33 @@ const price = document.querySelector('#price');
 const description = document.querySelector('#description');
 const select = document.querySelector('#colors');
 
+let productData = [];
+
 const fetchProductInfo = () => {
   fetch(`http://localhost:3000/api/products/${selectedProductId}`)
     .then(res => res.json())
-    .then(product => {
+    .then(promise => {
+
+      productData = promise;
 
       let img = document.createElement('img');
-      img.src = product.imageUrl;
+      img.src = productData.imageUrl;
       itemImg.appendChild(img);
 
-      title.innerText = product.name;
-      price.innerText = product.price;
-      description.innerText = product.description;
+      title.innerText = productData.name;
+      price.innerText = productData.price;
+      description.innerText = productData.description;
 
-      product.colors.forEach(color => {
+      productData.colors.forEach(color => {
+
         let options = document.createElement('option');
-
         options.innerText = color;
         options.value = color;
 
         select.appendChild(options)
       })
+
+      addCart(productData);
 
     })
     .catch(error => {
@@ -34,3 +40,27 @@ const fetchProductInfo = () => {
     })
 }
 fetchProductInfo();
+
+
+const addCart = () => {
+  let button = document.querySelector('#addToCart');
+
+  button.addEventListener('click', () => {
+    let productsArray = JSON.parse(localStorage.getItem('products'))
+    let selectedColor = document.querySelector('#colors');
+    let selectedQuantity = document.querySelector('#quantity')
+    console.log(selectedColor.value);
+    console.log(selectedQuantity.value);
+
+    const selectedOptions = Object.assign({}, productData, {
+      color: selectedColor.value,
+      quantity: selectedQuantity.value
+    })
+
+    productsArray = [];
+    productsArray.push(selectedOptions);
+    localStorage.setItem('products', JSON.stringify(productsArray))
+
+    console.log(productsArray);
+  })
+}
