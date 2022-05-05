@@ -14,7 +14,7 @@ const fetchProductData = async () => {
       productData = promise;
     })
     .catch(error => {
-      console.error("Une erreur s'est produite lors de la récupération des produits !");
+      console.error("Une erreur s'est produite lors de la récupération du produit !");
       console.error(error)
     })
 }
@@ -42,8 +42,7 @@ const productDisplay = async () => {
 }
 productDisplay();
 
-
-const addCart = async() => {
+const addCart = async () => {
   await fetchProductData();
 
   let button = document.querySelector('#addToCart');
@@ -52,17 +51,29 @@ const addCart = async() => {
   button.addEventListener('click', () => {
     let selectedColor = document.querySelector('#colors');
     let selectedQuantity = document.querySelector('#quantity');
-    console.log(selectedColor.value, selectedQuantity.value);
-
-    const selectedOptions = {
+    let storedValues = {
       id: productData._id,
       color: selectedColor.value,
-      quantity: selectedQuantity.value
+      quantity: +selectedQuantity.value
     }
 
-    cart.push(selectedOptions);
-    localStorage.setItem('products', JSON.stringify(cart))
+    if (storedValues.color === '') return alert("Veuillez choisir un couleur.");
+    if (storedValues.quantity <= 0) return alert("Veuillez choisir une quantité.");
 
-    console.log(cart);
+    if ((cart.some(item => item.id === storedValues.id && item.color === storedValues.color))) {
+      console.log(true);
+
+      cart.forEach(item => {
+        if (item.color === storedValues.color) {
+          item.quantity += storedValues.quantity;
+        }
+      })
+
+    } else {
+      console.log(false);
+      cart.push(storedValues);
+    }
+
+    localStorage.setItem('products', JSON.stringify(cart))
   })
 }
