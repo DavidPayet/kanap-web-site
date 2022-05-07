@@ -46,7 +46,7 @@ const addCart = async () => {
   await fetchProductData();
 
   let button = document.querySelector('#addToCart');
-  let cart = JSON.parse(localStorage.getItem('products')) || [];
+  let cart = JSON.parse(localStorage.getItem('product')) || [];
 
   button.addEventListener('click', () => {
     let selectedColor = document.querySelector('#colors');
@@ -74,6 +74,6 @@ const addCart = async () => {
       cart.push(storedValues);
     }
 
-    localStorage.setItem('products', JSON.stringify(cart))
+    localStorage.setItem('product', JSON.stringify(cart))
   })
 }
