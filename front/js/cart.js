@@ -22,12 +22,7 @@ const cartDisplay = async () => {
 
     const targetApiProduct = cartProductData.find(data => data._id === el.id);
 
-    // console.log(el.id, "localStorage");
-    // console.log(el.color, "localStorage");
-    // console.log(targetApiProduct._id, "fetch api");
-    // console.log(targetApiProduct.imageUrl);
-
-    cartItems.innerHTML +=  `
+    cartItems.innerHTML += `
       <article class="cart__item" data-id="${el.id}" data-color="${el.color}">
         <div class="cart__item__img">
           <img src="${targetApiProduct.imageUrl}" alt="${targetApiProduct.altTxt}">
@@ -51,5 +46,28 @@ const cartDisplay = async () => {
       </article>
     `
   })
+
+  modifyStoredQuantity()
+
 }
 cartDisplay();
+
+
+
+const modifyStoredQuantity = () => {
+  const itemsQuantity = document.querySelectorAll('.itemQuantity');
+  const articles = document.querySelectorAll('article');
+
+  for (let i = 0; i < articles.length; i++) {
+    for (let j = 0; j < cartProduct.length; j++) {
+      if (articles[i].dataset.id === cartProduct[j].id && articles[i].dataset.color === cartProduct[j].color) {
+
+        itemsQuantity[i].addEventListener('change', (e) => {
+          cartProduct[j].quantity = +e.target.value
+          localStorage.setItem('product', JSON.stringify(cartProduct))
+        })
+
+      }
+    }
+  }
+}
