@@ -47,27 +47,64 @@ const cartDisplay = async () => {
     `
   })
 
-  modifyStoredQuantity()
+  modifyArticlesCartData()
+  deleteItem()
 
 }
 cartDisplay();
 
 
 
-const modifyStoredQuantity = () => {
+const modifyArticlesCartData = () => {
   const itemsQuantity = document.querySelectorAll('.itemQuantity');
   const articles = document.querySelectorAll('article');
+  const frontSideQuantity = document.querySelectorAll('.cart__item__content__settings__quantity > p');
+  const frontSidePrice = document.querySelectorAll('.cart__item__content__description :nth-child(3)')
 
   for (let i = 0; i < articles.length; i++) {
     for (let j = 0; j < cartProduct.length; j++) {
       if (articles[i].dataset.id === cartProduct[j].id && articles[i].dataset.color === cartProduct[j].color) {
 
         itemsQuantity[i].addEventListener('change', (e) => {
-          cartProduct[j].quantity = +e.target.value
-          localStorage.setItem('product', JSON.stringify(cartProduct))
+          const targetPrice = cartProductData.find(data => data._id === articles[i].dataset.id);
+
+          // Update localStorage quantity
+          cartProduct[j].quantity = +e.target.value;
+          localStorage.setItem('product', JSON.stringify(cartProduct));
+
+          // Update itemsQuantity value attribute
+          itemsQuantity[i].setAttribute('value', cartProduct[j].quantity);
+
+          // Update front side quantity
+          frontSideQuantity[i].innerHTML = `Qté : ${itemsQuantity[i].value}`;
+
+          // Update front side price
+          frontSidePrice[i].innerHTML = `${targetPrice.price * itemsQuantity[i].value} €`;
+
         })
 
       }
     }
+  }
+}
+
+
+const deleteItem = () => {
+  const deleteItemBtn = document.querySelectorAll('.deleteItem');
+  const articles = document.querySelectorAll('article');
+
+  for (let i = 0; i < articles.length; i++) {
+
+    deleteItemBtn[i].addEventListener('click', () => {
+      // Remove from DOM
+      articles[i].remove();
+
+      // Remove from localStorage
+      cartProduct.splice(i, 1);
+      localStorage.setItem('product', JSON.stringify(cartProduct));
+
+      location.reload();
+    })
+
   }
 }
