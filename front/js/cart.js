@@ -1,7 +1,11 @@
 const cartItems = document.querySelector('#cart__items');
+const totalQuantity = document.querySelector('#totalQuantity');
+const totalPrice = document.querySelector('#totalPrice');
 
 let cartProduct = JSON.parse(localStorage.getItem('product')) || [];
 let cartProductData = [];
+let totalQtt = 0;
+let totalPrices = 0;
 
 const fetchCartProductData = async () => {
   await fetch('http://localhost:3000/api/products')
@@ -49,6 +53,8 @@ const cartDisplay = async () => {
 
   modifyArticlesCartData()
   deleteItem()
+  totalArticles()
+  totalAmount()
 
 }
 cartDisplay();
@@ -59,7 +65,7 @@ const modifyArticlesCartData = () => {
   const itemsQuantity = document.querySelectorAll('.itemQuantity');
   const articles = document.querySelectorAll('article');
   const frontSideQuantity = document.querySelectorAll('.cart__item__content__settings__quantity > p');
-  const frontSidePrice = document.querySelectorAll('.cart__item__content__description :nth-child(3)')
+  const frontSidePrice = document.querySelectorAll('.cart__item__content__description :nth-child(3)');
 
   for (let i = 0; i < articles.length; i++) {
     for (let j = 0; j < cartProduct.length; j++) {
@@ -80,6 +86,12 @@ const modifyArticlesCartData = () => {
 
           // Update front side price
           frontSidePrice[i].innerHTML = `${targetPrice.price * itemsQuantity[i].value} €`;
+
+          // Update total articles
+          totalArticles()
+
+          // Update total amount
+          totalAmount()
 
         })
 
@@ -107,4 +119,29 @@ const deleteItem = () => {
     })
 
   }
+}
+
+
+const totalArticles = () => {
+  let cartProductQuantities = [];
+  
+  for (let i = 0; i < cartProduct.length; i ++) {
+    cartProductQuantities.push(cartProduct[i].quantity)
+  }
+
+  totalQtt = cartProductQuantities.reduce((a, b) => a + b)
+  
+  totalQuantity.innerHTML = `${totalQtt}`
+}
+
+
+const totalAmount = () => {
+  const allPrices = document.querySelectorAll('.cart__item__content__description :nth-child(3)');
+  let cartProductPrices = [];
+
+  allPrices.forEach(price => cartProductPrices.push(+price.textContent.slice(0, -2)));
+
+  totalPrices = cartProductPrices.reduce((a, b) => a + b)
+
+  totalPrice.innerHTML = `${totalPrices}`
 }
