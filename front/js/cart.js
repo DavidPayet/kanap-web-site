@@ -1,12 +1,36 @@
 const cartItems = document.querySelector('#cart__items');
 const totalQuantity = document.querySelector('#totalQuantity');
 const totalPrice = document.querySelector('#totalPrice');
+const form = document.querySelector('.cart__order__form');
+const firstName = document.querySelector('#firstName');
+const lastName = document.querySelector('#lastName');
+const address = document.querySelector('#address');
+const city = document.querySelector('#city');
+const email = document.querySelector('#email');
+const orderBtn = document.querySelector('#order');
+const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
+const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg');
+const addressErrorMsg = document.querySelector('#addressErrorMsg');
+const cityErrorMsg = document.querySelector('#cityErrorMsg');
+const emailErrorMsg = document.querySelector('#emailErrorMsg');
 
 let cartProduct = JSON.parse(localStorage.getItem('product')) || [];
 let cartProductData = [];
 let totalQtt = 0;
 let totalPrices = 0;
+let formIsValid = false;
 
+const contactInfo = {
+  firstName: "",
+  lastName: "",
+  address: "",
+  city: "",
+  email: ""
+};
+
+let productOrdered = [];
+
+// Retrieve product data from API
 const fetchCartProductData = async () => {
   await fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -19,6 +43,7 @@ const fetchCartProductData = async () => {
     })
 }
 
+// Display the cart
 const cartDisplay = async () => {
   await fetchCartProductData();
 
@@ -59,8 +84,7 @@ const cartDisplay = async () => {
 }
 cartDisplay();
 
-
-
+// Modify articles data (quantity and price)
 const modifyArticlesCartData = () => {
   const itemsQuantity = document.querySelectorAll('.itemQuantity');
   const articles = document.querySelectorAll('article');
@@ -100,7 +124,7 @@ const modifyArticlesCartData = () => {
   }
 }
 
-
+// Delete an article
 const deleteItem = () => {
   const deleteItemBtn = document.querySelectorAll('.deleteItem');
   const articles = document.querySelectorAll('article');
@@ -121,20 +145,20 @@ const deleteItem = () => {
   }
 }
 
-
+// Get total articles
 const totalArticles = () => {
   let cartProductQuantities = [];
-  
-  for (let i = 0; i < cartProduct.length; i ++) {
+
+  for (let i = 0; i < cartProduct.length; i++) {
     cartProductQuantities.push(cartProduct[i].quantity)
   }
 
   totalQtt = cartProductQuantities.reduce((a, b) => a + b)
-  
+
   totalQuantity.innerHTML = `${totalQtt}`
 }
 
-
+// Get total amount
 const totalAmount = () => {
   const allPrices = document.querySelectorAll('.cart__item__content__description :nth-child(3)');
   let cartProductPrices = [];
@@ -145,3 +169,124 @@ const totalAmount = () => {
 
   totalPrice.innerHTML = `${totalPrices}`
 }
+
+// Form validation
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  checkInputs();
+})
+
+
+
+const checkFirstName = () => {
+  let nameRegex = /^[a-z\s]+$/gi;
+
+  firstName.addEventListener('change', e => {
+    firstName.value = e.target.value.trim();
+
+    if (nameRegex.test(firstName.value)) {
+      formIsValid = true;
+      contactInfo.firstName = firstName.value;
+      firstNameErrorMsg.innerText = '';
+    } else if (!nameRegex.test(firstName.value) || firstName.value === '') {
+      formIsValid = false;
+      firstNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
+    }
+
+    console.log(formIsValid, contactInfo);
+  })
+
+}
+
+const checkLastName = () => {
+  let nameRegex = /^[a-z\s]+$/gi;
+
+  lastName.addEventListener('change', e => {
+    lastName.value = e.target.value.trim();
+
+    if (nameRegex.test(lastName.value)) {
+      formIsValid = true;
+      contactInfo.lastName = lastName.value;
+      lastNameErrorMsg.innerText = '';
+    } else if (!nameRegex.test(lastName.value) || lastName.value === '') {
+      formIsValid = false;
+      lastNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
+    }
+
+    console.log(formIsValid, contactInfo);
+  })
+
+}
+
+const checkAddress = () => {
+  let addressRegex = /^[a-z0-9\s]+$/gi;
+
+  address.addEventListener('change', e => {
+    address.value = e.target.value.trim();
+
+    if (addressRegex.test(address.value)) {
+      formIsValid = true;
+      contactInfo.address = address.value;
+      addressErrorMsg.innerText = '';
+    } else if (!addressRegex.test(address.value) || address.value === '') {
+      formIsValid = false;
+      addressErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
+    }
+
+    console.log(formIsValid, contactInfo);
+  })
+
+}
+
+const checkCity = () => {
+  let addressRegex = /^[a-z0-9\s]+$/gi;
+
+  city.addEventListener('change', e => {
+    city.value = e.target.value.trim();
+
+    if (addressRegex.test(city.value)) {
+      formIsValid = true;
+      contactInfo.city = city.value;
+      cityErrorMsg.innerText = '';
+    } else if (!addressRegex.test(city.value) || city.value === '') {
+      formIsValid = false;
+      cityErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
+    }
+
+    console.log(formIsValid, contactInfo);
+  })
+
+}
+
+const checkEmail = () => {
+  let emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
+
+  email.addEventListener('change', e => {
+    email.value = e.target.value.trim();
+
+    if (emailRegex.test(email.value)) {
+      formIsValid = true;
+      contactInfo.email = email.value;
+      emailErrorMsg.innerText = '';
+    } else if (!emailRegex.test(email.value) || email.value === '') {
+      formIsValid = false;
+      emailErrorMsg.innerText = "Ce champ est requis et doit être saisie d'une adresse mail valide."
+    }
+
+    console.log(formIsValid, contactInfo);
+  })
+
+}
+
+
+const checkInputs = () => {
+  checkFirstName()
+  checkLastName()
+  checkAddress()
+  checkCity()
+  checkEmail()
+  console.log(contactInfo);
+}
+checkInputs()
