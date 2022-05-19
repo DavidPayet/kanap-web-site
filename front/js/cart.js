@@ -318,7 +318,7 @@ const postOrder = () => {
 form.addEventListener('submit', (e) => {
   e.preventDefault()
 
-  validInputs === 5 && postOrder()
+  confirm('Voulez-vous valider votre commande ?') && validInputs === 5 ? postOrder() : ''
 
   console.log(validInputs);
   console.log(products);
