@@ -7,7 +7,6 @@ const lastName = document.querySelector('#lastName');
 const address = document.querySelector('#address');
 const city = document.querySelector('#city');
 const email = document.querySelector('#email');
-const orderBtn = document.querySelector('#order');
 const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
 const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg');
 const addressErrorMsg = document.querySelector('#addressErrorMsg');
@@ -18,19 +17,17 @@ let cartProduct = JSON.parse(localStorage.getItem('product')) || [];
 let cartProductData = [];
 let totalQtt = 0;
 let totalPrices = 0;
-let formIsValid = false;
-
-const contactInfo = {
+let validInputs = 0;
+let contact = {
   firstName: "",
   lastName: "",
   address: "",
   city: "",
   email: ""
 };
+let products = [];
 
-let productOrdered = [];
-
-// Retrieve product data from API
+// Retrieve products data from API
 const fetchCartProductData = async () => {
   await fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -170,15 +167,7 @@ const totalAmount = () => {
   totalPrice.innerHTML = `${totalPrices}`
 }
 
-// Form validation
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  checkInputs();
-})
-
-
+// Check inputs validation
 
 const checkFirstName = () => {
   let nameRegex = /^[a-z\s]+$/gi;
@@ -187,38 +176,43 @@ const checkFirstName = () => {
     firstName.value = e.target.value.trim();
 
     if (nameRegex.test(firstName.value)) {
-      formIsValid = true;
-      contactInfo.firstName = firstName.value;
+      validInputs++;
+      contact.firstName = firstName.value;
       firstNameErrorMsg.innerText = '';
     } else if (!nameRegex.test(firstName.value) || firstName.value === '') {
-      formIsValid = false;
+      validInputs--;
+      contact.firstName = '';
       firstNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
 
-    console.log(formIsValid, contactInfo);
-  })
+    console.log(validInputs, contact);
 
+  })
 }
+checkFirstName()
 
 const checkLastName = () => {
   let nameRegex = /^[a-z\s]+$/gi;
+  validInputs
 
   lastName.addEventListener('change', e => {
     lastName.value = e.target.value.trim();
 
     if (nameRegex.test(lastName.value)) {
-      formIsValid = true;
-      contactInfo.lastName = lastName.value;
+      validInputs++;
+      contact.lastName = lastName.value;
       lastNameErrorMsg.innerText = '';
     } else if (!nameRegex.test(lastName.value) || lastName.value === '') {
-      formIsValid = false;
+      validInputs--;
+      contact.lastName = '';
       lastNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
 
-    console.log(formIsValid, contactInfo);
-  })
+    console.log(validInputs, contact);
 
+  })
 }
+checkLastName()
 
 const checkAddress = () => {
   let addressRegex = /^[a-z0-9\s]+$/gi;
@@ -227,18 +221,20 @@ const checkAddress = () => {
     address.value = e.target.value.trim();
 
     if (addressRegex.test(address.value)) {
-      formIsValid = true;
-      contactInfo.address = address.value;
+      validInputs++;
+      contact.address = address.value;
       addressErrorMsg.innerText = '';
     } else if (!addressRegex.test(address.value) || address.value === '') {
-      formIsValid = false;
+      validInputs--;
+      contact.address = '';
       addressErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
 
-    console.log(formIsValid, contactInfo);
-  })
+    console.log(validInputs, contact);
 
+  })
 }
+checkAddress()
 
 const checkCity = () => {
   let addressRegex = /^[a-z0-9\s]+$/gi;
@@ -247,18 +243,20 @@ const checkCity = () => {
     city.value = e.target.value.trim();
 
     if (addressRegex.test(city.value)) {
-      formIsValid = true;
-      contactInfo.city = city.value;
+      validInputs++;
+      contact.city = city.value;
       cityErrorMsg.innerText = '';
     } else if (!addressRegex.test(city.value) || city.value === '') {
-      formIsValid = false;
+      validInputs--;
+      contact.city = '';
       cityErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
 
-    console.log(formIsValid, contactInfo);
-  })
+    console.log(validInputs, contact);
 
+  })
 }
+checkCity()
 
 const checkEmail = () => {
   let emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
@@ -267,26 +265,63 @@ const checkEmail = () => {
     email.value = e.target.value.trim();
 
     if (emailRegex.test(email.value)) {
-      formIsValid = true;
-      contactInfo.email = email.value;
+      validInputs++;
+      contact.email = email.value;
       emailErrorMsg.innerText = '';
     } else if (!emailRegex.test(email.value) || email.value === '') {
-      formIsValid = false;
+      validInputs--;
+      contact.email = '';
       emailErrorMsg.innerText = "Ce champ est requis et doit être saisie d'une adresse mail valide."
     }
 
-    console.log(formIsValid, contactInfo);
+    console.log(validInputs, contact);
+
   })
+}
+checkEmail()
+
+// Implemment product array with id
+const productsArrayImplementation = () => {
+  cartProduct.forEach(product => {
+    products.push(product.id)
+  })
+}
+productsArrayImplementation()
+
+
+// Post order
+const postOrder = () => {
+  const order = { contact, products }
+
+  fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+    .then(res => res.json())
+    .then(data => {
+
+      window.location = `confirmation.html?${data.orderId}`;
+      // console.log('Réponse: ', data);
+    })
+    .catch(error => {
+      console.error("Une erreur s'est produite lors de l'envoie de la commande !");
+      console.error(error)
+    })
 
 }
 
+// Send order
+form.addEventListener('submit', (e) => {
+  e.preventDefault()
 
-const checkInputs = () => {
-  checkFirstName()
-  checkLastName()
-  checkAddress()
-  checkCity()
-  checkEmail()
-  console.log(contactInfo);
-}
-checkInputs()
+  validInputs === 5 && postOrder()
+
+  console.log(validInputs);
+  console.log(products);
+  console.log(contact);
+
+})
