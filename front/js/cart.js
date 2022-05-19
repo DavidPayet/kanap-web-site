@@ -13,7 +13,7 @@ const addressErrorMsg = document.querySelector('#addressErrorMsg');
 const cityErrorMsg = document.querySelector('#cityErrorMsg');
 const emailErrorMsg = document.querySelector('#emailErrorMsg');
 
-let cartProduct = JSON.parse(localStorage.getItem('product')) || [];
+let cartProductStored = JSON.parse(localStorage.getItem('product')) || [];
 let cartProductData = [];
 let totalQtt = 0;
 let totalPrices = 0;
@@ -44,7 +44,7 @@ const fetchCartProductData = async () => {
 const cartDisplay = async () => {
   await fetchCartProductData();
 
-  cartProduct.forEach(el => {
+  cartProductStored.forEach(el => {
 
     const targetApiProduct = cartProductData.find(data => data._id === el.id);
 
@@ -89,18 +89,18 @@ const modifyArticlesCartData = () => {
   const frontSidePrice = document.querySelectorAll('.cart__item__content__description :nth-child(3)');
 
   for (let i = 0; i < articles.length; i++) {
-    for (let j = 0; j < cartProduct.length; j++) {
-      if (articles[i].dataset.id === cartProduct[j].id && articles[i].dataset.color === cartProduct[j].color) {
+    for (let j = 0; j < cartProductStored.length; j++) {
+      if (articles[i].dataset.id === cartProductStored[j].id && articles[i].dataset.color === cartProductStored[j].color) {
 
         itemsQuantity[i].addEventListener('change', (e) => {
           const targetPrice = cartProductData.find(data => data._id === articles[i].dataset.id);
 
           // Update localStorage quantity
-          cartProduct[j].quantity = +e.target.value;
-          localStorage.setItem('product', JSON.stringify(cartProduct));
+          cartProductStored[j].quantity = +e.target.value;
+          localStorage.setItem('product', JSON.stringify(cartProductStored));
 
           // Update itemsQuantity value attribute
-          itemsQuantity[i].setAttribute('value', cartProduct[j].quantity);
+          itemsQuantity[i].setAttribute('value', cartProductStored[j].quantity);
 
           // Update front side quantity
           frontSideQuantity[i].innerHTML = `Qté : ${itemsQuantity[i].value}`;
@@ -133,8 +133,8 @@ const deleteItem = () => {
       articles[i].remove();
 
       // Remove from localStorage
-      cartProduct.splice(i, 1);
-      localStorage.setItem('product', JSON.stringify(cartProduct));
+      cartProductStored.splice(i, 1);
+      localStorage.setItem('product', JSON.stringify(cartProductStored));
 
       location.reload();
     })
@@ -146,8 +146,8 @@ const deleteItem = () => {
 const totalArticles = () => {
   let cartProductQuantities = [];
 
-  for (let i = 0; i < cartProduct.length; i++) {
-    cartProductQuantities.push(cartProduct[i].quantity)
+  for (let i = 0; i < cartProductStored.length; i++) {
+    cartProductQuantities.push(cartProductStored[i].quantity)
   }
 
   totalQtt = cartProductQuantities.reduce((a, b) => a + b)
@@ -282,7 +282,7 @@ checkEmail()
 
 // Implemment product array with id
 const productsArrayImplementation = () => {
-  cartProduct.forEach(product => {
+  cartProductStored.forEach(product => {
     products.push(product.id)
   })
 }
