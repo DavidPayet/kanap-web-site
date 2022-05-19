@@ -7,6 +7,7 @@ const select = document.querySelector('#colors');
 
 let productData = [];
 
+// Retrieve products data by selected id
 const fetchProductData = async () => {
   await fetch(`http://localhost:3000/api/products/${selectedProductId}`)
     .then(res => res.json())
@@ -19,6 +20,7 @@ const fetchProductData = async () => {
     })
 }
 
+// Display product sheet
 const productDisplay = async () => {
   await fetchProductData();
 
@@ -42,6 +44,7 @@ const productDisplay = async () => {
 }
 productDisplay();
 
+// Add a product to cart
 const addCart = async () => {
   await fetchProductData();
 
