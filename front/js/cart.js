@@ -180,7 +180,7 @@ const checkFirstName = () => {
       contact.firstName = firstName.value;
       firstNameErrorMsg.innerText = '';
     } else if (!nameRegex.test(firstName.value) || firstName.value === '') {
-      validInputs--;
+      validInputs > 0 ? validInputs-- : validInputs;
       contact.firstName = '';
       firstNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
@@ -203,7 +203,7 @@ const checkLastName = () => {
       contact.lastName = lastName.value;
       lastNameErrorMsg.innerText = '';
     } else if (!nameRegex.test(lastName.value) || lastName.value === '') {
-      validInputs--;
+      validInputs > 0 ? validInputs-- : validInputs;
       contact.lastName = '';
       lastNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
@@ -225,7 +225,7 @@ const checkAddress = () => {
       contact.address = address.value;
       addressErrorMsg.innerText = '';
     } else if (!addressRegex.test(address.value) || address.value === '') {
-      validInputs--;
+      validInputs > 0 ? validInputs-- : validInputs;
       contact.address = '';
       addressErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
@@ -247,7 +247,7 @@ const checkCity = () => {
       contact.city = city.value;
       cityErrorMsg.innerText = '';
     } else if (!addressRegex.test(city.value) || city.value === '') {
-      validInputs--;
+      validInputs > 0 ? validInputs-- : validInputs;
       contact.city = '';
       cityErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
@@ -269,7 +269,7 @@ const checkEmail = () => {
       contact.email = email.value;
       emailErrorMsg.innerText = '';
     } else if (!emailRegex.test(email.value) || email.value === '') {
-      validInputs--;
+      validInputs > 0 ? validInputs-- : validInputs;
       contact.email = '';
       emailErrorMsg.innerText = "Ce champ est requis et doit être saisie d'une adresse mail valide."
     }

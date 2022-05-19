@@ -3,3 +3,6 @@ const targetId = window.location.search.split('?').join('');
 
 // Display order id
 orderId.innerText = targetId;
+
+// Clear localStorage
+localStorage.clear()
