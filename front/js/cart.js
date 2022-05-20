@@ -185,8 +185,6 @@ const checkFirstName = () => {
       firstNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
 
-    console.log(validInputs, contact);
-
   })
 }
 checkFirstName()
@@ -208,8 +206,6 @@ const checkLastName = () => {
       lastNameErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des lettres.'
     }
 
-    console.log(validInputs, contact);
-
   })
 }
 checkLastName()
@@ -229,8 +225,6 @@ const checkAddress = () => {
       contact.address = '';
       addressErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
-
-    console.log(validInputs, contact);
 
   })
 }
@@ -252,8 +246,6 @@ const checkCity = () => {
       cityErrorMsg.innerText = 'Ce champ est requis et ne doit contenir que des caractères alphanumériques.'
     }
 
-    console.log(validInputs, contact);
-
   })
 }
 checkCity()
@@ -273,8 +265,6 @@ const checkEmail = () => {
       contact.email = '';
       emailErrorMsg.innerText = "Ce champ est requis et doit être saisie d'une adresse mail valide."
     }
-
-    console.log(validInputs, contact);
 
   })
 }
@@ -303,9 +293,7 @@ const postOrder = () => {
   })
     .then(res => res.json())
     .then(data => {
-
       window.location = `confirmation.html?${data.orderId}`;
-      // console.log('Réponse: ', data);
     })
     .catch(error => {
       console.error("Une erreur s'est produite lors de l'envoie de la commande !");
@@ -316,12 +304,7 @@ const postOrder = () => {
 
 // Send order
 form.addEventListener('submit', (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  confirm('Voulez-vous valider votre commande ?') && validInputs === 5 ? postOrder() : ''
-
-  console.log(validInputs);
-  console.log(products);
-  console.log(contact);
-
+  validInputs === 5 && confirm('Voulez-vous valider votre commande ?') ? postOrder() : '';
 })

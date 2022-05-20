@@ -64,7 +64,6 @@ const addCart = async () => {
     if (storedValues.quantity <= 0) return alert("Veuillez choisir une quantité.");
 
     if ((cart.some(item => item.id === storedValues.id && item.color === storedValues.color))) {
-      console.log(true);
 
       cart.forEach(item => {
         if (item.color === storedValues.color) {
