@@ -72,7 +72,6 @@ const addCart = async () => {
       })
 
     } else {
-      console.log(false);
       cart.push(storedValues);
     }
 
